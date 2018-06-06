@@ -1,0 +1,44 @@
+clear a s sensor j i
+ a=arduino();
+ s=servo(a,'D4')
+ j=1;
+ k=1;
+ sensor = addon(a, 'JRodrigoTech/HCSR04', 'D12', 'D13')
+ X=zeros(180,2);
+ for i=0:1/90:1
+     writePosition(s,i);
+     pos = readPosition(s);
+       pos = pos*180;
+     val1 = readDistance(sensor);
+     pause(0.2);
+     val2 = readDistance(sensor);
+     val=(val1+val2)/2;
+     sprintf('Current distance is %.4f meters\n', val)
+     sprintf('current angle %.4f \n', pos)
+     X(j,1)=pos;
+     X(j,2)=val;
+     j=j+1;
+
+     
+ end
+ for i=1:-1/90:0
+      writePosition(s,i);
+     pos = readPosition(s);
+       pos = pos*180;
+     val1 = readDistance(sensor);
+     pause(0.2);
+     val2 = readDistance(sensor);
+     val=(val1+val2)/2;
+     sprintf('Current distance is %.4f meters\n', val)
+     sprintf('current angle %.4f \n', pos)
+  
+     X(j-k,2)=(X(j-k,2)+val)/2;
+     k=k+1;
+
+     
+ end 
+
+
+ polarplot(X(:,1)*pi/180,X(:,2))
+ thetalim([0 180])
+ %copy right :- ANUJ PAHARIYA, EC, MITS GWALIOR
